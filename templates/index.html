@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Practice Quiz (Flask)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Light gray background */
+        }
+        /* Custom scrollbar for question code blocks */
+        .code-block {
+            max-height: 150px;
+            overflow-y: auto;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            background-color: #1f2937; /* Darker background for code */
+            color: #e5e7eb; /* Light text for code */
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+            font-size: 0.875rem; /* text-sm */
+        }
+        .code-block::-webkit-scrollbar {
+            width: 8px;
+            height: 8px; /* For horizontal scrollbar if needed */
+        }
+        .code-block::-webkit-scrollbar-track {
+            background: #2d3748; /* Track color */
+            border-radius: 10px;
+        }
+        .code-block::-webkit-scrollbar-thumb {
+            background: #4a5568; /* Thumb color */
+            border-radius: 10px;
+        }
+        .code-block::-webkit-scrollbar-thumb:hover {
+            background: #6b7280; /* Thumb color on hover */
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+
+    <div id="quiz-container" class="bg-white rounded-lg shadow-xl p-8 w-full max-w-2xl transform transition-all duration-300">
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-8 rounded-md bg-blue-100 p-3 shadow-sm">
+            Python Practice Test Reviewer
+        </h1>
+
+        <!-- Quiz Area -->
+        <div id="question-area" class="space-y-6">
+            <div id="question-number" class="text-lg font-semibold text-gray-600 mb-2"></div>
+            <p id="question-text" class="text-xl font-medium text-gray-900 leading-relaxed"></p>
+            <div id="question-code" class="code-block whitespace-pre-wrap hidden"></div>
+
+            <div id="options-container" class="space-y-3">
+                <!-- Options will be loaded here by JavaScript -->
+            </div>
+
+            <div id="feedback-message" class="mt-4 p-3 rounded-md text-center hidden"></div>
+
+            <div class="flex justify-between items-center mt-6">
+                <button id="prev-button" class="px-6 py-2 bg-gray-300 text-gray-800 font-semibold rounded-md shadow-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-75 transition-all duration-200" disabled>
+                    Previous
+                </button>
+                <button id="next-button" class="px-8 py-3 bg-blue-600 text-white font-bold rounded-md shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75 transition-all duration-200">
+                    Next
+                </button>
+            </div>
+        </div>
+
+    <footer>
+        <div class="text-center text-gray-500 text-sm mt-8">
+            &copy; 2025 Python Practice Quiz. All rights reserved. Created by <a href="https://github.com/rvorbita" class="text-blue-600 hover:underline">RVORBITA</a>.
+        </div>
+    </footer>
+
+        <!-- Score Area -->
+        <div id="score-area" class="text-center space-y-6 hidden">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4">Quiz Complete!</h2>
+            <p id="final-score" class="text-4xl font-extrabold text-blue-700 mb-6"></p>
+            <button id="restart-button" class="px-8 py-3 bg-green-600 text-white font-bold rounded-md shadow-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-75 transition-all duration-200">
+                Restart Quiz
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // DOM element references
+        const questionNumberElem = document.getElementById('question-number');
+        const questionTextElem = document.getElementById('question-text');
+        const questionCodeElem = document.getElementById('question-code');
+        const optionsContainer = document.getElementById('options-container');
+        const feedbackMessage = document.getElementById('feedback-message');
+        const prevButton = document.getElementById('prev-button');
+        const nextButton = document.getElementById('next-button');
+        const quizArea = document.getElementById('question-area');
+        const scoreArea = document.getElementById('score-area');
+        const finalScoreElem = document.getElementById('final-score');
+        const restartButton = document.getElementById('restart-button');
+
+        let currentQuestionIndex = 0; // Client-side tracking of current question index
+        let totalQuestions = 0; // Will be set after fetching first question
+
+        // Function to fetch and load a question from the Flask backend
+        async function loadQuestion() {
+            hideFeedback(); // Clear any existing feedback
+
+            try {
+                const response = await fetch('/get_question');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+
+                if (data.error) {
+                    // Handle cases where there are no more questions (e.g., quiz completed on server)
+                    console.error("Error fetching question:", data.error);
+                    showScore(); // Maybe redirect to score if backend says no more questions
+                    return;
+                }
+
+                currentQuestionIndex = data.question_number - 1; // Update client-side index
+                totalQuestions = data.total_questions;
+
+                questionNumberElem.textContent = `Question ${data.question_number} of ${data.total_questions}`;
+                questionTextElem.textContent = data.question;
+
+                // Display code block if available
+                if (data.code) {
+                    questionCodeElem.textContent = data.code;
+                    questionCodeElem.classList.remove('hidden');
+                } else {
+                    questionCodeElem.classList.add('hidden');
+                }
+
+                optionsContainer.innerHTML = ''; // Clear previous options
+                data.options.forEach((option, index) => {
+                    const optionDiv = document.createElement('div');
+                    optionDiv.className = "flex items-center p-3 border border-gray-200 rounded-md shadow-sm bg-gray-50 hover:bg-gray-100 transition-colors duration-200 cursor-pointer";
+
+                    const radioInput = document.createElement('input');
+                    radioInput.type = 'radio';
+                    radioInput.name = 'quiz-option';
+                    radioInput.id = `option-${index}`;
+                    radioInput.value = option;
+                    radioInput.className = "form-radio h-5 w-5 text-blue-600 focus:ring-blue-500 mr-3";
+
+                    // Pre-select if user has answered this question before (data.user_answer comes from Flask session)
+                    if (data.user_answer === option) {
+                        radioInput.checked = true;
+                    }
+
+                    // No need to store answers client-side anymore, handled by backend
+                    radioInput.onchange = () => {
+                        hideFeedback(); // Clear feedback when user changes selection
+                    };
+
+                    const label = document.createElement('label');
+                    label.htmlFor = `option-${index}`;
+                    label.className = "ml-2 block text-base font-medium text-gray-700 flex-1";
+
+                    // Handle inline code snippets within options
+                    if (option.includes('`')) {
+                        const parts = option.split(/(`[^`]+`)/g).filter(Boolean);
+                        parts.forEach(part => {
+                            if (part.startsWith('`') && part.endsWith('`')) {
+                                const codeSpan = document.createElement('span');
+                                codeSpan.className = "font-mono bg-gray-200 px-1 py-0.5 rounded text-sm";
+                                codeSpan.textContent = part.slice(1, -1);
+                                label.appendChild(codeSpan);
+                            } else {
+                                label.appendChild(document.createTextNode(part));
+                            }
+                        });
+                    } else {
+                        label.textContent = option;
+                    }
+
+                    optionDiv.appendChild(radioInput);
+                    optionDiv.appendChild(label);
+                    optionsContainer.appendChild(optionDiv);
+                });
+
+                updateNavigationButtons();
+
+            } catch (error) {
+                console.error("Failed to load question:", error);
+                feedbackMessage.textContent = "Error loading quiz. Please try again.";
+                feedbackMessage.classList.remove('hidden');
+                feedbackMessage.classList.add('bg-red-100', 'text-red-700');
+            }
+        }
+
+        // Function to update navigation button states
+        function updateNavigationButtons() {
+            prevButton.disabled = currentQuestionIndex === 0;
+            nextButton.textContent = currentQuestionIndex === totalQuestions - 1 ? 'Show Score' : 'Next';
+            if (currentQuestionIndex === totalQuestions - 1) {
+                nextButton.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                nextButton.classList.add('bg-green-600', 'hover:bg-green-700');
+            } else {
+                nextButton.classList.remove('bg-green-600', 'hover:bg-blue-700');
+                nextButton.classList.add('bg-blue-600', 'hover:bg-blue-700');
+            }
+        }
+
+        // Function to show feedback message
+        function showFeedback(message, isCorrect) {
+            feedbackMessage.textContent = message;
+            feedbackMessage.classList.remove('hidden', 'bg-red-100', 'text-red-700', 'bg-green-100', 'text-green-700');
+            if (isCorrect) {
+                feedbackMessage.classList.add('bg-green-100', 'text-green-700');
+            } else {
+                feedbackMessage.classList.add('bg-red-100', 'text-red-700');
+            }
+        }
+
+        // Function to hide feedback message
+        function hideFeedback() {
+            feedbackMessage.classList.add('hidden');
+        }
+
+        // Function to calculate and show final score
+        async function showScore() {
+            try {
+                const response = await fetch('/get_final_score');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+
+                quizArea.classList.add('hidden');
+                scoreArea.classList.remove('hidden');
+                finalScoreElem.textContent = `You scored ${data.score} out of ${data.total_questions}!`;
+            } catch (error) {
+                console.error("Failed to get score:", error);
+                scoreArea.classList.remove('hidden');
+                finalScoreElem.textContent = "Error calculating score.";
+            }
+        }
+
+        // Event Listener for Next/Show Score Button
+        nextButton.addEventListener('click', async () => {
+            const selectedOption = document.querySelector('input[name="quiz-option"]:checked');
+
+            if (!selectedOption) {
+                showFeedback("Please select an answer before proceeding.", false);
+                return;
+            }
+
+            // Temporarily disable buttons to prevent multiple submissions
+            prevButton.disabled = true;
+            nextButton.disabled = true;
+
+            try {
+                // 1. Submit the answer to the backend
+                const submitResponse = await fetch('/submit_answer', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        selected_option: selectedOption.value,
+                        question_index: currentQuestionIndex
+                    })
+                });
+
+                if (!submitResponse.ok) {
+                    throw new Error(`HTTP error submitting answer! status: ${submitResponse.status}`);
+                }
+                const feedbackData = await submitResponse.json();
+
+                // 2. Display feedback based on backend response
+                if (feedbackData.is_correct) {
+                    showFeedback("Correct!", true);
+                } else {
+                    showFeedback(`Incorrect. The correct answer was: ${feedbackData.correct_answer}`, false);
+                }
+
+                // Wait for a short period before moving to the next question
+                setTimeout(async () => {
+                    // 3. Navigate to the next question on the backend
+                    if (currentQuestionIndex < totalQuestions - 1) {
+                        await fetch('/navigate_question', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ direction: 'next' })
+                        });
+                        loadQuestion(); // Then load the new current question
+                    } else {
+                        showScore(); // If it was the last question, show score
+                    }
+                    // Re-enable buttons after navigation or score display
+                    prevButton.disabled = false;
+                    nextButton.disabled = false;
+                }, 1500); // Show feedback for 1.5 seconds
+
+            } catch (error) {
+                console.error("Error during answer submission or navigation:", error);
+                showFeedback("An error occurred. Please try again.", false);
+                prevButton.disabled = false;
+                nextButton.disabled = false;
+            }
+        });
+
+        // Event Listener for Previous Button
+        prevButton.addEventListener('click', async () => {
+            if (currentQuestionIndex > 0) {
+                try {
+                    // Navigate to the previous question on the backend
+                    await fetch('/navigate_question', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ direction: 'prev' })
+                    });
+                    loadQuestion(); // Load the new current question
+                } catch (error) {
+                    console.error("Error navigating back:", error);
+                    showFeedback("An error occurred while going back.", false);
+                }
+            }
+        });
+
+        // Event Listener for Restart Button
+        restartButton.addEventListener('click', async () => {
+            try {
+                // A simple way to restart is to just load the home page again,
+                // which will reset the session on the backend.
+                window.location.reload();
+            } catch (error) {
+                console.error("Error restarting quiz:", error);
+                showFeedback("Failed to restart quiz.", false);
+            }
+        });
+
+        // Initial load of the first question when the page loads
+        document.addEventListener('DOMContentLoaded', loadQuestion);
+    </script>
+
+
+</body>
+</html>
+
