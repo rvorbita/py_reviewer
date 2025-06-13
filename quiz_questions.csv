@@ -1,14 +1,14 @@
-"question","code","option_1","option_2","option_3","option_4","answer"
+question,code,option_1,option_2,option_3,option_4,answer
 "Which of the following expressions evaluates to a zero result? (Select one for this quiz version)","4 - 3 // 2 + 1
 4 / 2 + 2 ** 1
 1 ** 2 - 4 // 3
 1 // 3 * 3 ** 0","4 - 3 // 2 + 1","4 / 2 + 2 ** 1","1 ** 2 - 4 // 3","1 // 3 * 3 ** 0","1 ** 2 - 4 // 3"
-"Which data type does -1999 represent?",,"Float","Boolean","Integer","String","Integer"
-"Which arithmetic operation has the highest priority?",,"EXPONENTIATION","DIVISION","ADDITION",,"EXPONENTIATION"
-"To run the code given as a source file whose name has the .py extension, you need to have:",,"a Python compiler.","a Python interpreter.","an MS Windows computer.","a Python editor.","a Python interpreter."
-"Which line of code asks the user for an integer value and assigns it to the `version` variable?",,"version = str(input(\"Enter major version number: \"))","version = int(\"Enter major version number: \")","version = int(input(\"Enter major version number: \"))","version = float(input(\"Enter major version number: \"))","version = int(input(\"Enter major version number: \"))"
-"Which line of code asks the user for a float value and assigns it to the `velocity` variable?",,"velocity = str(input(\"Enter speed in knots\"))","velocity = float(\"Enter speed in knots\")","velocity = float(input(\"Enter speed in knots\"))","velocity = int(input(\"Enter speed in knots\"))","velocity = float(input(\"Enter speed in knots\"))"
-"Binary code consists of:",,"a list of keywords.","a sequence of bits which encode machine instructions.","a sequence of ASCII characters.","a set of a certain alphabet symbols.","a sequence of bits which encode machine instructions."
+"Which data type does -1999 represent?",,Float,Boolean,Integer,String,Integer
+"Which arithmetic operation has the highest priority?",,EXPONENTIATION,DIVISION,ADDITION,,EXPONENTIATION
+"To run the code given as a source file whose name has the .py extension, you need to have:",,a Python compiler.,a Python interpreter.,an MS Windows computer.,a Python editor.,a Python interpreter.
+"Which line of code asks the user for an integer value and assigns it to the `version` variable?",,"version = str(input(""Enter major version number: ""))","version = int(""Enter major version number: "")","version = int(input(""Enter major version number: ""))","version = float(input(""Enter major version number: ""))","version = int(input(""Enter major version number: ""))"
+"Which line of code asks the user for a float value and assigns it to the `velocity` variable?",,"velocity = str(input(""Enter speed in knots""))","velocity = float(""Enter speed in knots"")","velocity = float(input(""Enter speed in knots""))","velocity = int(input(""Enter speed in knots""))","velocity = float(input(""Enter speed in knots""))"
+"Binary code consists of:",,a list of keywords.,a sequence of bits which encode machine instructions.,a sequence of ASCII characters.,a set of a certain alphabet symbols.,a sequence of bits which encode machine instructions.
 "What is the expected output of the following code?","others = 1
 for i in range(2, 4):
     for j in range(-1, 2):
@@ -16,34 +16,34 @@ for i in range(2, 4):
             others += 1
         else:
             break
-print(others)","1","0","2","Infinite Loop","1"
+print(others)",1,0,2,Infinite Loop,1
 "How many asterisks (*) does the following code output to the screen?","torque = 0
 while torque <= 0:
     torque /= 2
-    print(\"*\", end=\"\")
+    print(""*"", end="""")
 else:
-    print(\"*\")","0","1","2","Infinite Loop","Infinite Loop"
+    print(""*"")",0,1,2,Infinite Loop,1
 "What value of 'shift' would cause '###' to be printed in the following code structure?","shift = 5 - 4 * 2
 
 if shift > 0:
-    print(\"*\")
+    print(""*"")
 elif shift == 0:
-    print(\"**\")
+    print(""**"")
 elif shift < 0:
-    print(\"###\")","A positive value for shift.","Zero for shift.","A negative value for shift.","","A negative value for shift."
+    print(""###"")",A positive value for shift.,Zero for shift.,A negative value for shift.,,A negative value for shift.
 "Arrange the code boxes to obtain a loop which executes its body with the number variable going through the values -3, -2, -1 (in that order).",,"for number in range(-3, 0, 1):","for number in range(-3, -1, 1):","for number in range(0, -3, -1):","for number in range(-3, 0):","for number in range(-3, 0, 1):"
 "What is the expected output of the following code?","planets = 1 + 2 * 3 // 4
 if planets < 0:
-    print(\"#\")
+    print(""#"")
 elif planets > 2:
-    print(\"##\")
+    print(""##"")
 else:
-    print(\"###\")","#","##","###","An error","###"
-"Assuming that `numbers = [1, 0.5, 0.25, 0.125]`, which expression will not raise any exception?",,"numbers[0]","numbers[-10]","numbers[len(numbers)]","numbers[4]","numbers[0]"
-"What is the expected output of the following code?","train_speed = {\"FlyingScotsman\": 200, \"SGV\": 320, \"Shinkansen\": 320}
+    print(""###"")",#,##,###,An error,###
+"Assuming that `numbers = [1, 0.5, 0.25, 0.125]`, which expression will not raise any exception?",,numbers[0],numbers[-10],numbers[len(numbers)],numbers[4],numbers[0]
+"What is the expected output of the following code?","train_speed = {""FlyingScotsman"": 200, ""SGV"": 320, ""Shinkansen"": 320}
 for train in train_speed.items():
-    print(train[0], end=\"\")","FlyingScotsmanSGVShinkansen","200320320","('FlyingScotsman', 200)('SGV', 320)('Shinkansen', 320)","An error","FlyingScotsmanSGVShinkansen"
-"Assuming that `the_data = [True, 0.2415, -2]`, which expression evaluates to False?",,"the_data.index(-2) not in the_data","-2 in the_data[2:4]","len(the_data[0:2]) == 0","the_data.index(True) == 0","the_data.index(-2) not in the_data"
+    print(train[0], end="""")",FlyingScotsmanSGVShinkansen,200320320,"('FlyingScotsman', 200)('SGV', 320)('Shinkansen', 320)",An error,FlyingScotsmanSGVShinkansen
+"Assuming that `the_data = [True, 0.2415, -2]`, which expression evaluates to False?",,the_data.index(-2) not in the_data,-2 in the_data[2:4],len(the_data[0:2]) == 0,the_data.index(True) == 0,the_data.index(-2) not in the_data
 "Arrange the code boxes to form a conditional instruction which guarantees that a certain statement is executed when the `tax_rate` variable is less than 23.5.",,"if tax_rate < 23.5:","if tax_rate <= 23.5:","if tax_rate == 23.5:","if tax_rate is less than 23.5:","if tax_rate < 23.5:"
 "What is the expected output of the following code?","answers = [False, True, True]
 selection = answers[:]
@@ -51,43 +51,43 @@ points = 0
 for answer in selection[1:]:
     if answer:
         points += 1
-print(points)","0","1","2","3","2"
+print(points)",0,1,2,3,2
 "What is the expected output of the following code?","angle = -1
 for i in range(-1, 1):
     if 2 * i < 4:
         angle += 1
     else:
         angle += 2
-print(angle)","-1","0","1","3","1"
+print(angle)",-1,0,1,3,1
 "What is the expected output of the following code?","list_one = [1, 2]
 list_two = list_one[:]
 list_two.append(3)
-print(list_one[-1] + list_two[-1])","2","3","5","An error","5"
+print(list_one[-1] + list_two[-1])",2,3,5,An error,5
 "What is the expected output of the following code?","power = 2
 while power < 5:
     power += 1
     if power == 3:
         continue
-    print(\"@\", end=\"\")
+    print(""@"", end="""")
 else:
-    print(\"@\")","@","@@","@@@","Infinite loop","@@@"
-"Which statement about Python functions is true?",,"A function cannot invoke itself.","It's technically possible to name a variable using an already existing function name, but it will shadow that function.","A function declaration may be located anywhere inside the source code.","When a function body contains no return expression statement, the function returns None implicitly.","When a function body contains no return expression statement, the function returns None implicitly."
-"How do you add \"Prosciutto Pizza\" at $1.39 to a dictionary named `pizza_menu`?",,"pizza_menu.add(\"Prosciutto Pizza\", 1.39)","pizza_menu[\"Prosciutto Pizza\"] = 1.39","pizza_menu.update({\"Prosciutto Pizza\": 1.39})","pizza_menu.insert(\"Prosciutto Pizza\", 1.39)","pizza_menu[\"Prosciutto Pizza\"] = 1.39"
+    print(""@"")",@,@@,@@@,Infinite loop,@@@
+"Which statement about Python functions is true?",,A function cannot invoke itself.,"It's technically possible to name a variable using an already existing function name, but it will shadow that function.",A function declaration may be located anywhere inside the source code.,"When a function body contains no return expression statement, the function returns None implicitly.","When a function body contains no return expression statement, the function returns None implicitly."
+"How do you add ""Prosciutto Pizza"" at $1.39 to a dictionary named `pizza_menu`?",,"pizza_menu.add(""Prosciutto Pizza"", 1.39)","pizza_menu[""Prosciutto Pizza""] = 1.39","pizza_menu.update({""Prosciutto Pizza"": 1.39})","pizza_menu.insert(""Prosciutto Pizza"", 1.39)","pizza_menu[""Prosciutto Pizza""] = 1.39"
 "What is the expected result of the following code?","def sample(value):
     return total - value
 
 total = 4
 total = sample(2)
 total = sample(1)
-print(total)","1","2","4","An error","1"
-"Which statement about Python tuples is true?",,"The del keyword can be applied to a single tuple element in order to remove it.","Tuples are immutable, which means that you're not allowed to change their contents.","All tuple elements must be of the same type.","Tuple elements can be changed using indexing.","Tuples are immutable, which means that you're not allowed to change their contents."
+print(total)",1,2,4,An error,1
+"Which statement about Python tuples is true?",,The del keyword can be applied to a single tuple element in order to remove it.,"Tuples are immutable, which means that you're not allowed to change their contents.",All tuple elements must be of the same type.,Tuple elements can be changed using indexing.,"Tuples are immutable, which means that you're not allowed to change their contents."
 "What is the expected result of running the following code?","def process(data):
     data = 2
     return data
 
 measurements = [0 for x in range(3)]
 result = process(measurements)
-print(result[-2])","0","2","[0, 0, 0]","The code raises an unhandled exception (TypeError).","The code raises an unhandled exception (TypeError)."
+print(result[-2])",0,2,[0, 0, 0],The code raises an unhandled exception (TypeError).,The code raises an unhandled exception (TypeError).
 "Which function can be invoked with exactly three arguments?",,"def three(x, y=0): pass","def two(speed, altitude): pass","def one(x, y, z, v=0): pass","def four(): pass","def one(x, y, z, v=0): pass"
 "What is the expected output of the following recursive code?","def walk(top):
     if top == 0:
@@ -95,25 +95,25 @@ print(result[-2])","0","2","[0, 0, 0]","The code raises an unhandled exception (
     else:
         return top * walk(top - 1)
 
-print(walk(2))","0","1","2","6","0"
+print(walk(2))",0,1,2,6,0
 "What is the expected output of the following code?","def combine(width, height=10, depth=0, is_3D=False):
     if is_3D:
         return (is_3D, width, height, depth)
     return (is_3D, width)
 
-print(combine(2)[0])","True","False","None","An error","False"
-"Which code block will print \"Did you ever?\" in case of a ZeroDivisionError?","try:
+print(combine(2)[0])",True,False,None,An error,False
+"Which code block will print ""Did you ever?"" in case of a ZeroDivisionError?","try:
     rate = 25.5 / 0.0
 except ZeroDivisionError:
-    print(\"Did you ever?)\"","""try:
+    print(""Did you ever?)"")","""try:
     rate = 25.5 / 0.0
 except ZeroDivisionError:
-    print("Did you ever?")""","""if 25.5 / 0.0:
-    print("Did you ever?")""","""try:
+    print(""""Did you ever?"""")""","""if 25.5 / 0.0:
+    print(""""Did you ever?"""")""","""try:
     rate = 25.5 / 0.0
 except ValueError:
-    print("Did you ever?")""","""try:
+    print(""""Did you ever?"""")""","""try:
     rate = 25.5 / 0.0
 except ZeroDivisionError:
-    print("Did you ever?")"""
-"Which statement about Python exceptions is true?",,"IndexError may be raised when you try to access a nonexistent dictionary element.","If any of the raised exceptions remains unhandled, an error message is printed, and program execution continues.","An unhandled exception causes the program to terminate.","The code put inside the `finally` branch always executes.","An unhandled exception causes the program to terminate."
+    print(""""Did you ever?"""")"""
+"Which statement about Python exceptions is true?",,IndexError may be raised when you try to access a nonexistent dictionary element.,"If any of the raised exceptions remains unhandled, an error message is printed, and program execution continues.",An unhandled exception causes the program to terminate.,The code put inside the `finally` branch always executes.,An unhandled exception causes the program to terminate.
