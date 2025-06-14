@@ -87,7 +87,7 @@ print(total)",1,2,4,An error,1
 
 measurements = [0 for x in range(3)]
 result = process(measurements)
-print(result[-2])",0,2,[0, 0, 0],The code raises an unhandled exception (TypeError).,The code raises an unhandled exception (TypeError).
+print(result[-2])",0,2,0.0.0,The code raises an unhandled exception (TypeError).,The code raises an unhandled exception (TypeError).
 "Which function can be invoked with exactly three arguments?",,"def three(x, y=0): pass","def two(speed, altitude): pass","def one(x, y, z, v=0): pass","def four(): pass","def one(x, y, z, v=0): pass"
 "What is the expected output of the following recursive code?","def walk(top):
     if top == 0:
@@ -105,15 +105,18 @@ print(combine(2)[0])",True,False,None,An error,False
 "Which code block will print ""Did you ever?"" in case of a ZeroDivisionError?","try:
     rate = 25.5 / 0.0
 except ZeroDivisionError:
-    print(""Did you ever?)"")","""try:
+    print("Did you ever?")","""try:
     rate = 25.5 / 0.0
 except ZeroDivisionError:
-    print(""""Did you ever?"""")""","""if 25.5 / 0.0:
-    print(""""Did you ever?"""")""","""try:
+    print("Did you ever?")""","""if 25.5 / 0.0:
+    print("Did you ever?")""","""try:
     rate = 25.5 / 0.0
 except ValueError:
-    print(""""Did you ever?"""")""","""try:
+    print("Did you ever?")""","""try:
+    rate = 25.5 / 0.0
+except DivisionError:
+    print("Did you ever?")""","try:
     rate = 25.5 / 0.0
 except ZeroDivisionError:
-    print(""""Did you ever?"""")"""
+    print("Did you ever?")"
 "Which statement about Python exceptions is true?",,IndexError may be raised when you try to access a nonexistent dictionary element.,"If any of the raised exceptions remains unhandled, an error message is printed, and program execution continues.",An unhandled exception causes the program to terminate.,The code put inside the `finally` branch always executes.,An unhandled exception causes the program to terminate.

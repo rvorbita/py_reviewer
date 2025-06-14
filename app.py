@@ -7,26 +7,21 @@ app = Flask(__name__)
 # In a production environment, use a strong, randomly generated key from environment variables.
 app.secret_key = os.urandom(24)
 
-# Quiz questions data, now stored in Python
-# Note: For questions that originally had multiple correct answers or drag-and-drop,
-# I've adapted them to a single best answer for the simplified multiple-choice format.
-
-#load csv
+# Load quiz questions from CSV
 def read_quiz_csv(filepath):
     with open(filepath, mode='r', newline='', encoding='utf-8') as file:
         reader = csv.DictReader(file)
         quiz_questions = []
         for row in reader:
-            # Reconstruct the 'options' list and handle 'code' being None
             options = []
             for i in range(1, 5): # Assuming max 4 options
                 option_key = f"option_{i}"
-                if row.get(option_key): # Check if the option exists and is not empty
+                if row.get(option_key):
                     options.append(row[option_key])
 
             question_data = {
                 "question": row["question"],
-                "code": row["code"] if row["code"] else None, # Convert empty string to None
+                "code": row["code"] if row["code"] else None,
                 "options": options,
                 "answer": row["answer"]
             }
@@ -36,15 +31,15 @@ def read_quiz_csv(filepath):
 quiz_questions = read_quiz_csv('quiz_questions.csv')
 
 
-# Route Configuration 
+# Route Configuration
 
 @app.route('/')
 def index():
     """Renders the main quiz page."""
     # Initialize or reset session variables for a new quiz attempt
     session['current_question_index'] = 0
-    # Store user answers in session for persistence across requests
     session['user_answers'] = [None] * len(quiz_questions)
+    session['score'] = 0 # Initialize score here
     return render_template('index.html')
 
 @app.route('/get_question', methods=['GET'])
@@ -56,14 +51,12 @@ def get_question():
     index = session.get('current_question_index', 0)
     if 0 <= index < len(quiz_questions):
         question_data = quiz_questions[index]
-        # Prepare data to send to the client
         return jsonify({
             'question_number': index + 1,
             'total_questions': len(quiz_questions),
             'question': question_data['question'],
             'code': question_data['code'],
             'options': question_data['options'],
-            # Send the user's previously selected answer for this question
             'user_answer': session['user_answers'][index]
         })
     return jsonify({'error': 'No more questions or invalid index'}), 404
@@ -72,7 +65,7 @@ def get_question():
 def submit_answer():
     """
     Receives the user's selected answer, stores it in the session,
-    and returns feedback (correctness and correct answer).
+    updates the score, and returns feedback.
     """
     data = request.json
     selected_option = data.get('selected_option')
@@ -82,14 +75,31 @@ def submit_answer():
         return jsonify({'error': 'Invalid question index'}), 400
 
     current_question = quiz_questions[question_index]
-    is_correct = (selected_option == current_question['answer'])
+    correct_answer = current_question['answer']
+    is_correct = (selected_option == correct_answer)
 
-    # Store user's answer in the session
+    # Check if this question has been answered before in this session
+    # We only want to award/deduct points once per question.
+    previous_answer = session['user_answers'][question_index]
+
+    # Update user's answer in the session
     session['user_answers'][question_index] = selected_option
+
+    # Update score
+    # Get current score, default to 0 if not set
+    current_score = session.get('score', 0)
+
+    if is_correct and previous_answer != selected_option: # Correct answer, and it's a new correct answer or changed from incorrect
+        if previous_answer != correct_answer: # Only increment if it was previously incorrect or None
+            current_score += 1
+    elif not is_correct and previous_answer == correct_answer: # Changed from correct to incorrect
+        current_score -= 1
+
+    session['score'] = current_score # Update the session score
 
     feedback = {
         'is_correct': is_correct,
-        'correct_answer': current_question['answer']
+        'correct_answer': correct_answer
     }
     return jsonify(feedback)
 
@@ -99,7 +109,8 @@ def navigate_question():
     Updates the current_question_index in the session based on
     'next' or 'prev' direction.
     """
-    direction = request.json.get('direction')
+    data = request.json
+    direction = data.get('direction')
     current_index = session.get('current_question_index', 0)
 
     if direction == 'next':
@@ -116,16 +127,13 @@ def navigate_question():
 @app.route('/get_final_score', methods=['GET'])
 def get_final_score():
     """
-    Calculates the final score based on stored user answers
-    and returns it.
+    Returns the final score from the session, which should be updated
+    incrementally by submit_answer.
     """
-    final_score = 0
-    # Iterate through all questions and compare user's stored answers with correct answers
-    for i, q in enumerate(quiz_questions):
-        if session['user_answers'][i] == q['answer']:
-            final_score += 1
-    # Store final score in session (optional, for potential future use)
-    session['score'] = final_score
+    # The score should already be accurate from submit_answer calls.
+    # No need to recalculate here unless you want to ensure robustness.
+    final_score = session.get('score', 0)
+
     return jsonify({
         'score': final_score,
         'total_questions': len(quiz_questions)
@@ -133,6 +141,4 @@ def get_final_score():
 
 # Run the Flask application
 if __name__ == '__main__':
-    # Ensure the 'templates' directory exists for Flask to find templates
-    os.makedirs('templates', exist_ok=True)
-    app.run(debug=True) # debug=True is useful for development (auto-reloads, error messages)
+    app.run(debug=True)
